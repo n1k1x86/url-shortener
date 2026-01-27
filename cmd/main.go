@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	serv := service.NewHTTPServer(":8082")
+	serv := service.NewHTTPServer(":8080")
 	serv.Run()
 
 	sig := make(chan os.Signal, 1)

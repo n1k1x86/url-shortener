@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"url-shortener/server/router"
 )
 
 type Service struct {
@@ -38,7 +39,9 @@ func (s *Service) run() {
 }
 
 func NewHTTPServer(addr string) *Service {
+	r := router.NewRouter()
+
 	return &Service{
-		server: &http.Server{Addr: addr},
+		server: &http.Server{Addr: addr, Handler: r},
 	}
 }
