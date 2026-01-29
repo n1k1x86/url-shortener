@@ -8,9 +8,9 @@ import (
 )
 
 type DBManager interface {
-	Connect() (*pgxpool.Pool, error)
-	GetConnection() (*pgxpool.Conn, error)
-	Close() error
+	Connect(ctx context.Context) (*pgxpool.Pool, error)
+	GetConnection(ctx context.Context) (*pgxpool.Conn, error)
+	Close()
 }
 
 type TXManager interface {
