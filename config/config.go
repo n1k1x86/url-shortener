@@ -3,12 +3,14 @@ package config
 import (
 	"os"
 	auth_config "url-shortener/auth/config"
+	db_config "url-shortener/database/config"
 
 	"gopkg.in/yaml.v3"
 )
 
 type AppConfig struct {
-	Auth auth_config.Config `yaml:"auth"`
+	Auth     auth_config.Config `yaml:"auth"`
+	Database db_config.Config   `yaml:"database"`
 }
 
 func LoadConfig() (*AppConfig, error) {
