@@ -2,15 +2,32 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+	auth_service "url-shortener/auth/service"
+	"url-shortener/config"
 	"url-shortener/server/service"
 )
 
 func main() {
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	authService := auth_service.NewService(&cfg.Auth)
+	access, refresh, err := authService.GenerateTokenPair(123123, "my-test-login")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("access: %s\n", access)
+	fmt.Printf("refresh: %s\n", refresh)
+
 	serv := service.NewHTTPServer(":8080")
 	serv.Run()
 

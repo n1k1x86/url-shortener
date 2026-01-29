@@ -1,0 +1,10 @@
+auth:
+  base:
+    audience: user
+    issuer: shortener_server
+  refresh:
+    expired_after: 720h
+    secret: refresh-secret
+  access:
+    expired_after: 15m
+    secret: access-secret
