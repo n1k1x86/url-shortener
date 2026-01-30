@@ -2,31 +2,37 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+	auth_repo "url-shortener/auth/repo"
 	auth_service "url-shortener/auth/service"
 	"url-shortener/config"
+	db_service "url-shortener/database/service"
 	"url-shortener/server/service"
 )
 
 func main() {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	cfg, err := config.LoadConfig()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	authService := auth_service.NewService(&cfg.Auth)
-	access, refresh, err := authService.GenerateTokenPair(123123, "my-test-login")
+	dbManager := db_service.NewDBManager(&cfg.Database)
+	err = dbManager.Connect(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("access: %s\n", access)
-	fmt.Printf("refresh: %s\n", refresh)
+	txManager := db_service.NewTXManager()
+
+	authrepo := auth_repo.NewRepo(dbManager, txManager)
+	authService := auth_service.NewService(&cfg.Auth, authrepo)
 
 	serv := service.NewHTTPServer(":8080")
 	serv.Run()
@@ -38,5 +44,7 @@ func main() {
 	timeoutCtx, timeoutCancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer timeoutCancel()
 	serv.Stop(timeoutCtx)
+	dbManager.Close()
+
 	log.Println("application was gracefully shutted down")
 }

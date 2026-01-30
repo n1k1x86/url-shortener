@@ -5,8 +5,8 @@ CREATE TABLE IF NOT EXISTS refresh_tokens(
     jti TEXT,
     hash TEXT,
     user_id BIGINT REFERENCES users(id),
-    replaced_by BIGINT,
-    is_revoked BOOLEAN,
+    replaced_by TEXT,
+    is_revoked BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );

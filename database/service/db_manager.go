@@ -69,3 +69,7 @@ func (d *DBManager) Close() {
 		d.pool = nil
 	}
 }
+
+func NewDBManager(cfg *db_config.Config) *DBManager {
+	return &DBManager{cfg: cfg}
+}

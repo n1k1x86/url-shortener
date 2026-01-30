@@ -1,10 +1,11 @@
 package auth
 
+import "context"
+
 type Auth interface {
-	GenerateTokenPair(userID int64, login string) (string, string, error)
-	GenerateAccessToken(userID int64, login string) (string, error)
-	GenerateRefreshToken(userID int64, login string) (string, error)
-	ValidateAccessToken(access string) (bool, error)
-	ValidateRefreshToken(refresh string) (bool, error)
-	RotateRefreshToken(refresh string) (string, string, error)
+	GenerateTokenPair(ctx context.Context, userID int64, login string) (string, string, error)
+	GenerateAccessToken(ctx context.Context, userID int64, login string) (string, error)
+	GenerateRefreshToken(ctx context.Context, userID int64, login string) (string, string, error)
+	ValidateAccessToken(ctx context.Context, access string) (bool, error)
+	RefreshAccessToken(refresh string) (string, string, error)
 }

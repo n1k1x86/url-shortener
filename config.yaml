@@ -8,3 +8,18 @@ auth:
   access:
     expired_after: 15m
     secret: access-secret
+database:
+  dsn_cfg:
+    database: postgres
+    password: postgres
+    username: postgres
+    server: localhost:5432
+  conn_cfg:
+    max_conns: 20
+    min_conns: 2
+    max_conn_life_time: 1h
+    max_conn_idle_time: 30m
+    health_check_period: 1m
+  pool_cfg:
+    ping_timeout: 5s
+    acquire_timeout: 1s

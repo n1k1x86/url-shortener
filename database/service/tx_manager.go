@@ -2,34 +2,39 @@ package service
 
 import (
 	"context"
-	"database/sql"
+
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type TXManager struct {
-	db *sql.DB
 }
 
-func (t *TXManager) Execute(ctx context.Context, fn func(tx *sql.Tx) error) error {
-	tx, err := t.db.BeginTx(ctx, &sql.TxOptions{})
+func (t *TXManager) Execute(ctx context.Context, conn *pgxpool.Conn, fn func(ctx context.Context) error) error {
+	tx, err := conn.BeginTx(ctx, pgx.TxOptions{})
 	if err != nil {
 		return err
 	}
 
 	defer func() {
 		if p := recover(); p != nil {
-			tx.Rollback()
+			tx.Rollback(ctx)
 			panic(p)
 		}
 	}()
 
-	if err := fn(tx); err != nil {
-		tx.Rollback()
+	if err := fn(ctx); err != nil {
+		tx.Rollback(ctx)
 		return err
 	}
 
-	if err := tx.Commit(); err != nil {
+	if err := tx.Commit(ctx); err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func NewTXManager() *TXManager {
+	return &TXManager{}
 }
