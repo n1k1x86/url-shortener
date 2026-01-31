@@ -38,7 +38,7 @@ func (s *Service) run() {
 	}
 }
 
-func NewHTTPServer(addr string) *Service {
+func NewHTTPServer(ctx context.Context, addr string) *Service {
 	r := router.NewRouter()
 
 	return &Service{

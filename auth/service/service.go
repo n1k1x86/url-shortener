@@ -93,7 +93,7 @@ func (s *Service) GenerateRefreshToken(ctx context.Context, userID int64, login 
 	return refresh, jti, err
 }
 
-func (s *Service) ValidateAccessToken(ctx context.Context, access string) (bool, error) {
+func (s *Service) ValidateAccessToken(ctx context.Context, access string) (int64, bool, error) {
 	claims := &auth_models.CustomClaims{}
 	token, err := jwt.ParseWithClaims(access, claims, func(t *jwt.Token) (any, error) {
 		return []byte(s.cfg.AccessToken.Secret), nil
@@ -104,17 +104,17 @@ func (s *Service) ValidateAccessToken(ctx context.Context, access string) (bool,
 	)
 
 	if err != nil || !token.Valid {
-		return false, err
+		return 0, false, err
 	}
 
 	if ok, err := s.repo.IsUserExist(ctx, claims.Login, claims.UserID); !ok || err != nil {
 		if err != nil {
-			return false, err
+			return 0, false, err
 		}
-		return false, fmt.Errorf("user does not exist")
+		return 0, false, fmt.Errorf("user does not exist")
 	}
 
-	return true, nil
+	return claims.UserID, true, nil
 }
 
 func (s *Service) RefreshAccessToken(ctx context.Context, refresh string) (string, string, error) {
