@@ -2,11 +2,11 @@
 -- +goose StatementBegin
 CREATE TABLE links(
     id SERIAL PRIMARY KEY NOT NULL,
-    short TEXT,
-    source TEXT,
-    user_id BIGINT REFERENCES users(id),
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOT()
+    short TEXT UNIQUE NOT NULL,
+    source TEXT NOT NULL, 
+    user_id BIGINT REFERENCES users(id) NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT NOT() NOT NULL
 );
 -- +goose StatementEnd
 

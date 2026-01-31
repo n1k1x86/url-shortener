@@ -1,8 +1,8 @@
 package shortener
 
 type Shortener interface {
-	GetLinkByShort() (string, error)
+	GetLinkByShort(short string) (string, error)
 	GetAllLinks() ([]string, error)
-	DeleteLink() (bool, error)
+	DeleteLink(short string) (bool, error)
 	ShortLink(source string, short string) (bool, error)
 }
