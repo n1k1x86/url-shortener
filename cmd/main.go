@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
@@ -12,6 +13,8 @@ import (
 	"url-shortener/config"
 	db_service "url-shortener/database/service"
 	"url-shortener/server/service"
+	shortener_repo "url-shortener/shortener/repo"
+	shortener_service "url-shortener/shortener/service"
 )
 
 func main() {
@@ -34,7 +37,14 @@ func main() {
 	authrepo := auth_repo.NewRepo(dbManager, txManager)
 	authService := auth_service.NewService(&cfg.Auth, authrepo)
 
-	serv := service.NewHTTPServer(":8080")
+	access, refresh, _, _ := authService.GenerateTokenPair(ctx, 1, "user")
+	fmt.Println("access: ", access)
+	fmt.Println("refresh: ", refresh)
+
+	shortenerRepo := shortener_repo.NewRepo(dbManager, txManager)
+	shortenerService := shortener_service.NewService(shortenerRepo)
+
+	serv := service.NewHTTPServer(ctx, authService, shortenerService, ":8080")
 	serv.Run()
 
 	sig := make(chan os.Signal, 1)

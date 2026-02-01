@@ -1,12 +1,12 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE links(
-    id SERIAL PRIMARY KEY NOT NULL,
+    id SERIAL PRIMARY KEY,
     short TEXT UNIQUE NOT NULL,
     source TEXT NOT NULL, 
-    user_id BIGINT REFERENCES users(id) NOT NULL,
+    user_id BIGINT REFERENCES users(id),
     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
-    updated_at TIMESTAMPTZ DEFAULT NOT() NOT NULL
+    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 -- +goose StatementEnd
 

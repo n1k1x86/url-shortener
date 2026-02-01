@@ -12,6 +12,13 @@ type Repo struct {
 	txManager database.TXManager
 }
 
+func NewRepo(dbManager database.DBManager, txManager database.TXManager) *Repo {
+	return &Repo{
+		dbManager: dbManager,
+		txManager: txManager,
+	}
+}
+
 func (r *Repo) GetLinkByShort(ctx context.Context, short string, user_id int64) (string, error) {
 	conn, err := r.dbManager.GetConnection(ctx)
 	if err != nil {

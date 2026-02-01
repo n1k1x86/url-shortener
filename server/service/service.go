@@ -5,7 +5,9 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"url-shortener/auth"
 	"url-shortener/server/router"
+	"url-shortener/shortener"
 )
 
 type Service struct {
@@ -38,8 +40,8 @@ func (s *Service) run() {
 	}
 }
 
-func NewHTTPServer(ctx context.Context, addr string) *Service {
-	r := router.NewRouter()
+func NewHTTPServer(ctx context.Context, authService auth.Auth, shortener shortener.Shortener, addr string) *Service {
+	r := router.NewRouter(ctx, authService, shortener)
 
 	return &Service{
 		server: &http.Server{Addr: addr, Handler: r},
